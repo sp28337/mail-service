@@ -35,6 +35,11 @@ uv run celery -A app.core.celery_app.celery_app worker --loglevel=INFO
 docker compose up --build
 ```
 
+## Redis connectivity notes
+- For **local runs** (without Docker), defaults point to `redis://localhost:6379`.
+- For **docker compose**, service env overrides Redis host to `redis` automatically.
+
+
 ## API
 - `GET /health`
 - `GET /ready`

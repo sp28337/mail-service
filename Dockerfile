@@ -5,11 +5,9 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     UV_COMPILE_BYTECODE=1 \
     UV_LINK_MODE=copy
 
-ARG UV_VERSION=0.7.2
-
 WORKDIR /app
 
-COPY --from=ghcr.io/astral-sh/uv:${UV_VERSION} /uv /uvx /bin/
+COPY --from=ghcr.io/astral-sh/uv:0.7.2 /uv /uvx /bin/
 
 COPY pyproject.toml README.md /app/
 COPY app /app/app
