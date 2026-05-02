@@ -72,3 +72,10 @@ If your PR reports conflicts in `README.md` or `Dockerfile`, keep the **uv-based
 - `uv sync --extra dev` and `uv run ...` commands in README.
 - `COPY --from=ghcr.io/astral-sh/uv:<version> /uv /uvx /bin/` in Dockerfile.
 - `RUN uv pip install --system .` in Dockerfile.
+
+
+## Celery troubleshooting
+If you see `Received unregistered task of type 'app.tasks.mail_tasks.send_mail_task'`:
+1. Start worker with the configured app: `uv run celery -A app.core.celery_app.celery_app worker --loglevel=INFO`
+2. Ensure producer and worker use the same code version/image.
+3. Restart worker after task name/signature changes.

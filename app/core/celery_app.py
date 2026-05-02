@@ -11,6 +11,7 @@ celery_app = Celery(
 )
 
 celery_app.conf.update(
+    include=["app.tasks.mail_tasks"],
     task_serializer="json",
     result_serializer="json",
     accept_content=["json"],

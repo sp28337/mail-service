@@ -10,7 +10,14 @@ from app.services.mail_service import MailService
 logger = logging.getLogger(__name__)
 
 
-@celery_app.task(bind=True, autoretry_for=(ConnectionError, TimeoutError), retry_backoff=True, retry_jitter=True, max_retries=5)
+@celery_app.task(
+    name="app.tasks.mail_tasks.send_mail_task",
+    bind=True,
+    autoretry_for=(ConnectionError, TimeoutError),
+    retry_backoff=True,
+    retry_jitter=True,
+    max_retries=5,
+)
 def send_mail_task(self: Task, payload: dict) -> None:
     request = MailRequest(**payload)
     service = MailService()
