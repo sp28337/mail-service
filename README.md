@@ -11,22 +11,23 @@ Production-ready starter for asynchronous email delivery.
 - Strong request validation using Pydantic v2.
 - Dockerized local environment.
 - Test suite with API/service/task coverage.
+- CI pipeline with linting + tests on GitHub Actions.
 
 ## Architecture
 See `docs/architecture.md`.
 
-## Quickstart
+## Quickstart (uv)
 ```bash
-python -m venv .venv
+uv venv
 source .venv/bin/activate
-pip install -e .[dev]
+uv sync --extra dev
 cp .env.example .env
-uvicorn app.main:app --reload
+uv run uvicorn app.main:app --reload
 ```
 
 In another terminal:
 ```bash
-celery -A app.core.celery_app.celery_app worker --loglevel=INFO
+uv run celery -A app.core.celery_app.celery_app worker --loglevel=INFO
 ```
 
 ## Docker
@@ -52,11 +53,17 @@ Example request:
 
 ## Testing
 ```bash
-pytest
+uv run pytest
 ```
 
 ## Linting / Formatting
 ```bash
-ruff check .
-black --check .
+uv run ruff check .
+uv run black --check .
 ```
+
+## Notes for Pull Request Conflict Resolution
+If your PR reports conflicts in `README.md` or `Dockerfile`, keep the **uv-based** setup and ensure these lines remain:
+- `uv sync --extra dev` and `uv run ...` commands in README.
+- `COPY --from=ghcr.io/astral-sh/uv:<version> /uv /uvx /bin/` in Dockerfile.
+- `RUN uv pip install --system .` in Dockerfile.
