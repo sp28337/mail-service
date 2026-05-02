@@ -25,7 +25,10 @@ def send_mail_task(self: Task, payload: dict) -> None:
         import asyncio
 
         asyncio.run(service.send(request))
-        logger.info("mail_dispatched", extra={"to": [str(e) for e in request.to], "subject": request.subject})
+        logger.info(
+            "mail_dispatched",
+            extra={"to": [str(e) for e in request.to], "subject": request.subject},
+        )
     except MaxRetriesExceededError:
         logger.exception("mail_retry_exhausted")
         raise

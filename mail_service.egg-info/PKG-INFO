@@ -1,0 +1,93 @@
+Metadata-Version: 2.4
+Name: mail-service
+Version: 0.1.0
+Summary: Production-ready asynchronous mail service with FastAPI, Celery and Redis
+Requires-Python: >=3.11
+Description-Content-Type: text/markdown
+Requires-Dist: fastapi<1.0.0,>=0.111.0
+Requires-Dist: uvicorn[standard]<1.0.0,>=0.30.0
+Requires-Dist: celery[redis]<6.0.0,>=5.4.0
+Requires-Dist: redis<6.0.0,>=5.0.0
+Requires-Dist: pydantic<3.0.0,>=2.7.0
+Requires-Dist: pydantic-settings<3.0.0,>=2.3.0
+Requires-Dist: email-validator<3.0.0,>=2.1.1
+Requires-Dist: jinja2<4.0.0,>=3.1.4
+Requires-Dist: aiosmtplib<4.0.0,>=3.0.0
+Requires-Dist: python-json-logger<3.0.0,>=2.0.7
+Provides-Extra: dev
+Requires-Dist: pytest<9.0.0,>=8.2.0; extra == "dev"
+Requires-Dist: pytest-asyncio<1.0.0,>=0.23.7; extra == "dev"
+Requires-Dist: httpx<1.0.0,>=0.27.0; extra == "dev"
+Requires-Dist: coverage[toml]<8.0.0,>=7.5.0; extra == "dev"
+Requires-Dist: ruff<1.0.0,>=0.5.0; extra == "dev"
+Requires-Dist: black<25.0.0,>=24.4.0; extra == "dev"
+
+# Mail Service (FastAPI + Celery + Redis)
+
+Production-ready starter for asynchronous email delivery.
+
+## Features
+- FastAPI REST API with OpenAPI docs.
+- Async mail dispatch via Celery worker.
+- Redis as broker/result backend.
+- SMTP provider abstraction with template rendering (Jinja2).
+- Retry with exponential backoff on transient failures.
+- Strong request validation using Pydantic v2.
+- Dockerized local environment.
+- Test suite with API/service/task coverage.
+- CI pipeline with linting + tests on GitHub Actions.
+
+## Architecture
+See `docs/architecture.md`.
+
+## Quickstart (uv)
+```bash
+uv venv
+source .venv/bin/activate
+uv sync --extra dev
+cp .env.example .env
+uv run uvicorn app.main:app --reload
+```
+
+In another terminal:
+```bash
+uv run celery -A app.core.celery_app.celery_app worker --loglevel=INFO
+```
+
+## Docker
+```bash
+docker compose up --build
+```
+
+## API
+- `GET /health`
+- `GET /ready`
+- `POST /v1/mail/send`
+
+Example request:
+```json
+{
+  "to": ["user@example.com"],
+  "subject": "Welcome",
+  "text": "Hello from mail service",
+  "html": "<p>Hello from <b>mail service</b></p>",
+  "metadata": {"tenant": "acme"}
+}
+```
+
+## Testing
+```bash
+uv run pytest
+```
+
+## Linting / Formatting
+```bash
+uv run ruff check .
+uv run black --check .
+```
+
+## Notes for Pull Request Conflict Resolution
+If your PR reports conflicts in `README.md` or `Dockerfile`, keep the **uv-based** setup and ensure these lines remain:
+- `uv sync --extra dev` and `uv run ...` commands in README.
+- `COPY --from=ghcr.io/astral-sh/uv:<version> /uv /uvx /bin/` in Dockerfile.
+- `RUN uv pip install --system .` in Dockerfile.

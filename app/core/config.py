@@ -12,14 +12,16 @@ class Settings(BaseSettings):
 
     redis_url: str = Field(default="redis://localhost:6379/0", alias="REDIS_URL")
     celery_broker_url: str = Field(default="redis://localhost:6379/0", alias="CELERY_BROKER_URL")
-    celery_result_backend: str = Field(default="redis://localhost:6379/1", alias="CELERY_RESULT_BACKEND")
+    celery_result_backend: str = Field(
+        default="redis://localhost:6379/1", alias="CELERY_RESULT_BACKEND"
+    )
     celery_task_always_eager: bool = Field(default=False, alias="CELERY_TASK_ALWAYS_EAGER")
 
     smtp_host: str = Field(default="localhost", alias="SMTP_HOST")
-    smtp_port: int = Field(default=1025, alias="SMTP_PORT")
+    smtp_port: int = Field(default=465, alias="SMTP_PORT")
     smtp_username: str | None = Field(default=None, alias="SMTP_USERNAME")
     smtp_password: str | None = Field(default=None, alias="SMTP_PASSWORD")
-    smtp_use_tls: bool = Field(default=False, alias="SMTP_USE_TLS")
+    smtp_use_tls: bool = Field(default=True, alias="SMTP_USE_TLS")
     smtp_use_starttls: bool = Field(default=False, alias="SMTP_USE_STARTTLS")
     default_from_name: str = Field(default="Mail Service", alias="MAIL_FROM_NAME")
     default_from_email: str = Field(default="no-reply@example.com", alias="MAIL_FROM_EMAIL")
