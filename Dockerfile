@@ -5,13 +5,20 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     UV_COMPILE_BYTECODE=1 \
     UV_LINK_MODE=copy
 
+ARG UV_VERSION=0.7.2
+
 WORKDIR /app
 
-COPY --from=ghcr.io/astral-sh/uv:0.7.2 /uv /uvx /bin/
+COPY --from=ghcr.io/astral-sh/uv:${UV_VERSION} /uv /uvx /bin/
 
 COPY pyproject.toml README.md /app/
 COPY app /app/app
-RUN uv pip install --system .
+
+RUN adduser --disabled-password --gecos "" appuser \
+    && uv pip install --system . \
+    && chown -R appuser:appuser /app
+
+USER appuser
 
 EXPOSE 8000
 CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]

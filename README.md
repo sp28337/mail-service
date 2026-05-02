@@ -61,3 +61,9 @@ uv run pytest
 uv run ruff check .
 uv run black --check .
 ```
+
+## Notes for Pull Request Conflict Resolution
+If your PR reports conflicts in `README.md` or `Dockerfile`, keep the **uv-based** setup and ensure these lines remain:
+- `uv sync --extra dev` and `uv run ...` commands in README.
+- `COPY --from=ghcr.io/astral-sh/uv:<version> /uv /uvx /bin/` in Dockerfile.
+- `RUN uv pip install --system .` in Dockerfile.
