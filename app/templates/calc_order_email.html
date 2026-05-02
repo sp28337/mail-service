@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="ru">
+  <body style="font-family: Arial, sans-serif; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
+    <h2 style="color: #5a3e28;">Новая заявка на расчёт</h2>
+    <table style="width: 100%; border-collapse: collapse; margin-top: 16px;">
+      <tr style="background: #f5f0eb;">
+        <td style="padding: 10px 14px; font-weight: bold; width: 40%;">Имя</td>
+        <td style="padding: 10px 14px;">{{ name }}</td>
+      </tr>
+      <tr>
+        <td style="padding: 10px 14px; font-weight: bold;">Телефон</td>
+        <td style="padding: 10px 14px;">{{ phone }}</td>
+      </tr>
+      <tr style="background: #f5f0eb;">
+        <td style="padding: 10px 14px; font-weight: bold;">Площадь</td>
+        <td style="padding: 10px 14px;">{{ area }}</td>
+      </tr>
+      {% if article %}
+      <tr>
+        <td style="padding: 10px 14px; font-weight: bold;">Артикул</td>
+        <td style="padding: 10px 14px;">{{ article }}</td>
+      </tr>
+      {% endif %}
+    </table>
+    <p style="margin-top: 24px; color: #888; font-size: 12px;">Это автоматическое уведомление.</p>
+  </body>
+</html>
