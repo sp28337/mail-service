@@ -33,3 +33,26 @@ def test_template_rendering():
     )
     msg = service._build_message(req)
     assert 'text/html' in msg.as_string()
+
+
+def test_missing_template_falls_back_to_html():
+    service = MailService()
+    req = MailRequest(
+        to=['u@example.com'],
+        subject='templated',
+        template_name='missing.html',
+        html='<p>fallback</p>',
+    )
+    msg = service._build_message(req)
+    assert 'fallback' in msg.as_string()
+
+
+def test_missing_template_without_html_raises():
+    service = MailService()
+    req = MailRequest(
+        to=['u@example.com'],
+        subject='templated',
+        template_name='missing.html',
+    )
+    with pytest.raises(ValueError):
+        service._build_message(req)

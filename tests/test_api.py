@@ -21,3 +21,14 @@ def test_send_mail_validation(client):
     payload = {"to": ["user@example.com"], "subject": "Hi"}
     response = client.post('/v1/mail/send', json=payload)
     assert response.status_code == 422
+
+
+def test_template_placeholder_validation(client):
+    payload = {
+        "to": ["user@example.com"],
+        "subject": "Hi",
+        "template_name": "string",
+        "template_context": {"name": "User"},
+    }
+    response = client.post('/v1/mail/send', json=payload)
+    assert response.status_code == 422

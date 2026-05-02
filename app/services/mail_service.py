@@ -1,3 +1,4 @@
+from jinja2 import TemplateNotFound
 from email.message import EmailMessage
 
 from app.core.config import get_settings
@@ -45,7 +46,13 @@ class MailService:
         text_body = request.text or ""
         html_body = request.html
         if request.template_name:
-            html_body = self._renderer.render(request.template_name, request.template_context)
+            try:
+                html_body = self._renderer.render(request.template_name, request.template_context)
+            except TemplateNotFound:
+                if request.html:
+                    html_body = request.html
+                else:
+                    raise ValueError(f"Template {request.template_name!r} was not found")
 
         message.set_content(text_body or "This message contains HTML content.")
         if html_body:

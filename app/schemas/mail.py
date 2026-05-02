@@ -1,4 +1,4 @@
-from pydantic import BaseModel, ConfigDict, EmailStr, Field, model_validator
+from pydantic import BaseModel, ConfigDict, EmailStr, Field, field_validator, model_validator
 
 
 class MailRequest(BaseModel):
@@ -15,6 +15,18 @@ class MailRequest(BaseModel):
     template_name: str | None = None
     template_context: dict[str, str] = Field(default_factory=dict)
 
+
+
+    @field_validator("template_name")
+    @classmethod
+    def validate_template_name(cls, value: str | None) -> str | None:
+        if value is None:
+            return value
+        if value.strip().lower() == "string":
+            raise ValueError("template_name placeholder value is invalid")
+        if "/" in value or "\\" in value:
+            raise ValueError("template_name must be a file name, not a path")
+        return value
     @model_validator(mode="after")
     def validate_body_presence(self) -> "MailRequest":
         if not self.text and not self.html and not self.template_name:
