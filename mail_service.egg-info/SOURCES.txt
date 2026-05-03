@@ -2,10 +2,12 @@ README.md
 pyproject.toml
 app/__init__.py
 app/main.py
+app/tmp.py
 app/api/__init__.py
 app/api/routes.py
 app/api/v1/__init__.py
 app/api/v1/mail.py
+app/api/v1/notify.py
 app/api/v1/system.py
 app/core/__init__.py
 app/core/celery_app.py
@@ -13,6 +15,7 @@ app/core/config.py
 app/core/logging.py
 app/schemas/__init__.py
 app/schemas/mail.py
+app/schemas/notify.py
 app/services/__init__.py
 app/services/mail_service.py
 app/services/providers.py
@@ -26,4 +29,5 @@ mail_service.egg-info/requires.txt
 mail_service.egg-info/top_level.txt
 tests/test_api.py
 tests/test_mail_service.py
+tests/test_notify_api.py
 tests/test_tasks.py

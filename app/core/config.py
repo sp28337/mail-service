@@ -10,6 +10,8 @@ class Settings(BaseSettings):
     app_env: str = Field(default="dev", alias="APP_ENV")
     log_level: str = Field(default="INFO", alias="LOG_LEVEL")
 
+    redis_password: str = Field(default=None, alias="REDIS_PASSWORD")
+    redis_port: int = Field(default=6379, alias="REDIS_PORT")
     redis_url: str = Field(default="redis://localhost:6379/0", alias="REDIS_URL")
     celery_broker_url: str = Field(default="redis://localhost:6379/0", alias="CELERY_BROKER_URL")
     celery_result_backend: str = Field(
