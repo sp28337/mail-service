@@ -1,4 +1,4 @@
-from fastapi import APIRouter, status
+from fastapi import APIRouter, HTTPException, status
 
 from app.core.config import get_settings
 from app.schemas.mail import MailEnqueueResponse, MailRequest
@@ -9,8 +9,15 @@ router = APIRouter()
 
 
 def _get_notification_recipient() -> str:
+    """Return the configured notification recipient or raise 503 if not set."""
     settings = get_settings()
-    return settings.default_reply_to
+    recipient = settings.default_reply_to
+    if not recipient:
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail="Notification recipient (MAIL_REPLY_TO) is not configured.",
+        )
+    return recipient
 
 
 @router.post(

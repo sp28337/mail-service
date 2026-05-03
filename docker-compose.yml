@@ -1,12 +1,11 @@
-
 services:
   api:
     build: .
     env_file:
       - .env
     environment:
-      REDIS_URL: ${REDIS_URL}
-      CELERY_BROKER_URL: ${CELERY_BROKER_URL}
+      REDIS_URL:             ${REDIS_URL}
+      CELERY_BROKER_URL:     ${CELERY_BROKER_URL}
       CELERY_RESULT_BACKEND: ${CELERY_RESULT_BACKEND}
     ports:
       - "8000:8000"
@@ -16,7 +15,8 @@ services:
       redis:
         condition: service_healthy
     healthcheck:
-      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      test: ["CMD", "python", "-c",
+             "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
       interval: 20s
       timeout: 5s
       retries: 5
@@ -27,8 +27,8 @@ services:
     env_file:
       - .env
     environment:
-      REDIS_URL: ${REDIS_URL}
-      CELERY_BROKER_URL: ${CELERY_BROKER_URL}
+      REDIS_URL:             ${REDIS_URL}
+      CELERY_BROKER_URL:     ${CELERY_BROKER_URL}
       CELERY_RESULT_BACKEND: ${CELERY_RESULT_BACKEND}
     networks:
       - backend
@@ -38,43 +38,21 @@ services:
 
   redis:
     image: redis:7-alpine
-    healthcheck:
-      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD}", "ping"]
-      interval: 10s
-      timeout: 3s
-      retries: 10
-    env_file:
-      - .env
-    ports:
-      - ${REDIS_PORT}:${REDIS_PORT}
-#    command: redis-server /usr/local/etc/redis/redis.conf
-    restart: unless-stopped
-    volumes:
-      - redis-data:/data
-#      - ./redis.conf:/usr/local/etc/redis/redis.conf:ro
-    deploy:
-      resources:
-        limits:
-          cpus: '1.0'
-          memory: 512M
-        reservations:
-          cpus: '0.25'
-          memory: 256M
-    environment:
-      - REDIS_PASSWORD=${REDIS_PASSWORD:-defaultpassword}
     networks:
       - backend
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "10m"
-        max-file: "3"
-    sysctls:
-      - net.core.somaxconn=65535
+    command: redis-server --requirepass ${REDIS_PASSWORD:-devpassword}
+    ports:
+      - "127.0.0.1:6379:6379"   # только localhost — не виден снаружи
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD:-devpassword}", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
 
 volumes:
   redis-data:
-    driver: local
 
 networks:
   backend:
