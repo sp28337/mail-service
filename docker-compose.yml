@@ -8,18 +8,20 @@ services:
       CELERY_BROKER_URL:     ${CELERY_BROKER_URL}
       CELERY_RESULT_BACKEND: ${CELERY_RESULT_BACKEND}
     ports:
-      - "8732:8732"
+      - "127.0.0.1:8732:8732"
     networks:
       - backend
     depends_on:
       redis:
         condition: service_healthy
     healthcheck:
-      test: ["CMD", "python", "-c",
-             "import urllib.request; urllib.request.urlopen('http://localhost:8732/health')"]
+      test: ["CMD", "curl", "-f", "http://localhost:8732/health"]
       interval: 20s
       timeout: 5s
       retries: 5
+    mem_limit: 512m
+    cpus: 1.0
+    restart: unless-stopped
 
   worker:
     build: .
@@ -35,21 +37,25 @@ services:
     depends_on:
       redis:
         condition: service_healthy
+    restart: unless-stopped
 
   redis:
     image: redis:7-alpine
+    env_file:
+      - .env
     networks:
       - backend
-    command: redis-server --requirepass ${REDIS_PASSWORD:-devpassword}
+    command: redis-server --requirepass ${REDIS_PASSWORD}
     ports:
       - "127.0.0.1:6379:6379"   # только localhost — не виден снаружи
     volumes:
       - redis-data:/data
     healthcheck:
-      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD:-devpassword}", "ping"]
+      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD}", "ping"]
       interval: 5s
       timeout: 3s
       retries: 10
+    restart: unless-stopped
 
 volumes:
   redis-data:
